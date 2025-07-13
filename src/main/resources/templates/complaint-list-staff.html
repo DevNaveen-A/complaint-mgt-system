@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <title>Assigned Complaints - Staff View</title>
+    <link rel="shorcut icon" href="/LOG.ico" type="image/x-icon">
+    <style>
+
+        body {
+
+        font-family: Arial, sans-serif;
+
+        }
+
+        h2 {
+
+            text-align: center;
+
+            margin-top: 20px;
+
+            color: #fff;
+
+        }
+
+        table {
+
+            width: 95%;
+
+            margin: 30px auto;
+
+            border-collapse: collapse;
+
+            background-color: rgba(255, 255, 255, 0.96);
+
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+
+        }
+
+        th, td {
+
+            border: 1px solid #999;
+
+            padding: 10px;
+
+            text-align: center;
+
+        }
+
+        th {
+
+            background-color: #3f51b5;
+
+            color: white;
+
+        }
+
+        tr:hover {
+
+            background-color: #f1f1f1;
+
+        }
+
+        .btn-complete {
+
+            background-color: green;
+
+            color: white;
+
+            padding: 6px 12px;
+
+            border: none;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+
+        }
+
+        .btn-complete:hover {
+
+            background-color: darkgreen;
+
+        }
+
+        .completed-text {
+
+            color: gray;
+
+            font-weight: bold;
+
+        }
+
+        .remark-form input[type="text"] {
+
+            padding: 6px;
+
+            width: 160px;
+
+        }
+
+        .remark-form button {
+
+            padding: 6px 12px;
+
+            margin-left: 5px;
+
+        }
+
+        .logout-btn {
+
+            display: block;
+
+            margin: 30px auto;
+
+            padding: 10px 20px;
+
+            background-color: crimson;
+
+            color: white;
+
+            border: none;
+
+            border-radius: 6px;
+
+            font-weight: bold;
+
+            text-decoration: none;
+
+        }
+
+        .logout-btn:hover {
+
+            background-color: darkred;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <h2 th:text="${title}">Assigned Complaints (Staff View)</h2>
+
+<center><h1>THE COMPLAINT LIST </h1></center>
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>ID</th>
+
+                <th>Subject</th>
+
+                <th>Category</th>
+
+                <th>Status</th>
+
+                <th>Remarks</th>
+
+                <th>Created At</th>
+
+                <th>Add Remarks</th>
+
+                <th>Mark Complete</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr th:each="c : ${complaints}">
+
+                <td th:text="${c.id}"></td>
+
+                <td th:text="${c.subject}"></td>
+
+                <td th:text="${c.category}"></td>
+
+                <td th:text="${c.status}"></td>
+
+                <td th:text="${c.remarks}"></td>
+
+                <td th:text="${#dates.format(c.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
+
+                <!-- ✅ Add Remarks -->
+
+                <td>
+
+                    <form method="post" action="/staff/add-remarks" class="remark-form">
+
+                        <input type="hidden" name="complaintId" th:value="${c.id}" />
+
+                        <input type="text" name="remarks" placeholder="Enter remarks" required />
+
+                        <button type="submit">Add</button>
+
+                    </form>
+
+                </td>
+
+                <!-- ✅ Mark as Complete (Status comparison via enum name) -->
+
+                <td>
+
+                    <form th:if="${c.status.name() != 'COMPLETED'}" method="post" action="/staff/mark-complete">
+
+                        <input type="hidden" name="complaintId" th:value="${c.id}" />
+
+                        <button type="submit" class="btn-complete">Mark Complete</button>
+
+                    </form>
+
+                    <span th:if="${c.status.name() == 'COMPLETED'}" class="completed-text">✔ Completed</span>
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+
+
+   <div style="text-align: center; margin-top: 20px;">
+    <form action="/logout" method="post">
+        <button type="submit" style="padding: 10px 20px; background-color: #d9534f; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Logout
+        </button>
+    </form>
+</div>
+
+</body>
+
+</html>

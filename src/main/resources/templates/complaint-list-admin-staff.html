@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>All Complaints - Admin</title>
+    <link rel="shortcut icon" href="/LOG.ico" type="image/x-icon">
+    <style>
+        body {
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            font-family: Arial, sans-serif;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        table {
+            width: 95%;
+            margin: 30px auto;
+            border-collapse: collapse;
+            background-color: rgba(255, 255, 255, 0.95);
+        }
+
+        th, td {
+            border: 1px solid #aaa;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #444;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        select {
+            padding: 5px;
+        }
+
+        .assign-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 6px 10px;
+            border: none;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .assign-btn:hover {
+            background-color: green;
+        }
+
+        .unassign-btn {
+            background-color: #f44336;
+            color: white;
+            padding: 6px 10px;
+            border: none;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .unassign-btn:hover {
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+
+<h2 th:text="${title}" style="text-align:center;">All Complaints (Admin View)</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Subject</th>
+        <th>Category</th>
+        <th>Status</th>
+        <th>Student Email</th>
+        <th>Assigned Faculty</th>
+        <th>Remarks</th>
+        <th>Created At</th>
+        <th>Assign</th>
+        <th>Unassign</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="c : ${complaints}">
+        <td th:text="${c.id}"></td>
+        <td th:text="${c.subject}"></td>
+        <td th:text="${c.category}"></td>
+        <td th:text="${c.status}"></td>
+        <td th:text="${c.studentEmail}"></td>
+        <td th:text="${c.assignedFacultyEmail != null ? c.assignedFacultyEmail : 'Unassigned'}"></td>
+        <td th:text="${c.remarks}"></td>
+        <td th:text="${#dates.format(c.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
+
+        <!-- Switch based on status -->
+        <th:block th:switch="${c.status.name()}">
+
+            <!-- ✅ If RESOLVED, show 'Completed' only -->
+            <td colspan="2" th:case="'RESOLVED'" style="color: green; font-weight: bold;">
+                Completed
+            </td>
+
+            <!-- ❌ If NOT resolved, show assign and unassign buttons -->
+            <th:block th:case="*">
+                <!-- Assign -->
+                <td>
+                    <form method="post" action="/admin/assign">
+                        <input type="hidden" name="complaintId" th:value="${c.id}" />
+                        <select name="staffEmail" required>
+                            <option value="">Select Staff</option>
+                            <option th:each="staff : ${staffList}"
+                                    th:value="${staff.email}"
+                                    th:text="${staff.name}"></option>
+                        </select>
+                        <button type="submit" class="assign-btn">Assign</button>
+                    </form>
+                </td>
+
+                <!-- Unassign -->
+                <td>
+                    <th:block th:if="${c.assignedFacultyEmail != null}">
+                        <form method="post" action="/admin/unassign">
+                            <input type="hidden" name="complaintId" th:value="${c.id}" />
+                            <button type="submit" class="unassign-btn">Unassign</button>
+                        </form>
+                    </th:block>
+                    <th:block th:if="${c.assignedFacultyEmail == null}">
+                        <span style="color: gray;">—</span>
+                    </th:block>
+                </td>
+            </th:block>
+        </th:block>
+    </tr>
+    </tbody>
+</table>
+
+<div style="text-align: center; margin-top: 30px;">
+    <a href="/logout">
+        <button style="padding: 10px 20px; background-color: #f44336; color: white; border: none; cursor: pointer;">
+            Logout
+        </button>
+    </a>
+</div>
+
+</body>
+</html>

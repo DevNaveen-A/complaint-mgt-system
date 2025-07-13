@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login - Complaint Management System</title>
+    <link rel="shorcut icon" href="/LOG.ico" type="image/x-icon">
+    <meta charset="UTF-8">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            background-size: cover;
+            background-position: center;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .login-container {
+            width: 360px;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .form-container h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: black;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 90%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 30px;
+            background-color: #f1f1f1;
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .password-container input {
+            width: 90%;
+        }
+
+        .password-container i {
+            position: absolute;
+            right: 30px;
+            top: 20px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            margin: 10px 0;
+            border-radius: 10px;
+            background-color: #0f3460;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .submit:hover{
+background-color: green;
+box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.15);
+    transform: scale(1.02);
+    -webkit-transform: scale(1.02);
+    -moz-transform: scale(1.02);
+    -ms-transform: scale(1.02);
+    -o-transform: scale(1.02);
+}
+.reset:hover{
+background-color:red;
+box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.15);
+    transform: scale(1.02);
+    -webkit-transform: scale(1.02);
+    -moz-transform: scale(1.02);
+    -ms-transform: scale(1.02);
+    -o-transform: scale(1.02);
+}
+
+        .error-message,
+        .success-message {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .error-message {
+            color: red;
+        }
+
+        .success-message {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <section class="container">
+        <div class="login-container">
+            <div class="form-container">
+                <h1>LOGIN</h1>
+
+                <!-- ✅ Login Form -->
+                <form method="post" action="/login" autocomplete="off">
+                    <input type="text" name="username" placeholder="USERNAME" autocomplete="off" required />
+
+                    <div class="password-container">
+                        <input type="password" name="password" id="password" placeholder="PASSWORD" required />
+                        <i class="toggle-password" onclick="togglePassword()">👁️</i>
+                    </div>
+
+                    <button  class="submit" type="submit">SUBMIT</button>
+                    <button  class="reset" type="reset">RESET</button>
+                </form>
+
+                <!-- ✅ Error & Logout Messages -->
+                <p th:if="${param.error}" class="error-message">Invalid email or password</p>
+                <p th:if="${param.logout}" id="logout-msg" class="success-message">You have been logged out.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ✅ JS to auto-clear logout param and toggle password -->
+    <script>
+        // Hide ?logout after displaying message
+        if (window.location.href.includes("logout")) {
+            setTimeout(() => {
+                window.history.replaceState({}, document.title, "/login");
+            }, 500);
+        }
+
+        function togglePassword() {
+            const passwordInput = document.getElementById("password");
+            const icon = document.querySelector(".toggle-password");
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                icon.textContent = "🙈";
+            } else {
+                passwordInput.type = "password";
+                icon.textContent = "👁️";
+            }
+        }
+    </script>
+</body>
+</html>

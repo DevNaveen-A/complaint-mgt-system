@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+
+    <h2>Welcome to the Complaint Management System!</h2>
+
+    <p>You are logged in as: <span th:text="${#authentication.name}"></span></p>
+
+    <form action="/logout" method="post">
+
+        <button type="submit">Logout</button>
+
+    </form>
+
+</body>
+
+</html>
